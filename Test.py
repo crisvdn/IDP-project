@@ -1,2 +1,3 @@
-Hallo
-Test
+#Hallo
+#Test
+print('Hallo')
