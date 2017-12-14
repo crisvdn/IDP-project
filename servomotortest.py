@@ -21,17 +21,14 @@ def SetAngle(angle):
     GPIO.output(4, False)
     p.ChangeDutyCycle(0)
 
-# SetAngle(0)
+def open():
+    SetAngle(0)
+    sleep(8)
+    SetAngle(90)
 
-def passwd(wat):
-    if wat == 'abc':
-        print('juist passwd')
-        SetAngle(180)
-        sleep(8)
-        SetAngle(0)
-
-while True:
-    passwd(input('enter'))
+passwd = input('Enter a password: ')
+if passwd == '1234':
+    open()
 
 
 p.stop()
