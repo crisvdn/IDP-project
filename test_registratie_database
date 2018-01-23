@@ -280,6 +280,9 @@ def betaald():
     toch_IDEAL.lower()
     label6.lower()
     label8.lift()
+    print(Adres1)
+    print(Adres2)
+    print(Adres3)
     print("scan uw pasje >> Database")
     while run:
         rdr.wait_for_tag()
