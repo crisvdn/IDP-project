@@ -74,18 +74,40 @@ def main():
   lcd_string("Houd uw kaart",LCD_LINE_1)
   lcd_string( '    >>>0<<<     ' ,LCD_LINE_2)
 
-def naam_lcd():
+def hello():
+	lcd_init()
+	naam_klant = klant[1]
+	naampie = naam_klant.capitalize()
+	lcd_string('Hello '+ naampie ,LCD_LINE_1)
 
-  lcd_init()
+def gedag():
+	lcd_init()
+	naam_klant = klant[1]
+	naampie = naam_klant.capitalize()
+	lcd_string('   Tot ziens ',LCD_LINE_1)
+	lcd_string( '   '+ naampie ,LCD_LINE_2)
 
-  lcd_string('Hello '+ klant[1] ,LCD_LINE_1)
+ 
+def aantal_klanten(): 
+	lcd_init()
+	aantal = len(klant_lijst)
+	if aantal == 0:
+		lcd_string("U bent de eerste",LCD_LINE_1)
+  		lcd_string( "sporter aanwizig" ,LCD_LINE_2)
+  	elif aantal == 1:
+  		lcd_string("Er is momnteel",LCD_LINE_1)
+  		lcd_string( str(len(klant_lijst)) + ' sporter' ,LCD_LINE_2)
+  	else:
+  		lcd_string("Er zijn momnteel",LCD_LINE_1)
+  		lcd_string( str(len(klant_lijst)) + ' sporters' ,LCD_LINE_2)
   
-  
+
+  	
 def none_lcd():
 
   lcd_init()
 
-  lcd_string('Kaart ongeldig' ,LCD_LINE_1)
+  lcd_string('Kaart Ongeldig' ,LCD_LINE_1)
 
 
 
@@ -117,11 +139,12 @@ def SetAngle(angle):
 
 def in_open():
 	SetAngle(0)
-	sleep(6)
+	aantal_klanten()
+	sleep(5)
 	SetAngle(90)
 def out_open():
 	SetAngle(180)
-	sleep(6)
+	sleep(5)
 	SetAngle(90)
 
 def end_read(signal,frame):
@@ -140,6 +163,7 @@ signal.signal(signal.SIGINT, end_read)
 print("scan uw pasje >> Database")
 main()
 
+'''
 def add_person(p_id, naam, gewicht):
     query = """
     INSERT INTO
@@ -150,7 +174,7 @@ def add_person(p_id, naam, gewicht):
     values = (p_id, naam, gewicht)
     cur.execute(query, values)
     conn.commit()
-
+'''
 
 def get_all_personen():
     query = """
@@ -161,6 +185,8 @@ def get_all_personen():
     """
     cur.execute(query)
     return cur.fetchall()
+
+klant_lijst = []
 
 while run:
     rdr.wait_for_tag()
@@ -176,14 +202,19 @@ while run:
         for i in uid:
             k_id+= str(i)
         #print(k_id)
-        klanten = get_all_personen()
+        klanten = get_all_personen()        
         for klant in klanten:
-        	if klant[0] == k_id:
-        		naam_lcd()
-        		in_open()
+        	if klant[0] == k_id and klant[0] in klant_lijst:
+        		gedag()
+        		out_open()
+        		klant_lijst.remove(klant[0])
         		#print('Hello '+ klant[1])
         		main()
-        	else:
-                    none_lcd()
-                    sleep(1)
-                    main()
+        	elif klant[0] == k_id and klant[0] not in klant_lijst:
+        		hello()
+        		in_open()
+        		klant_lijst.append(klant[0])
+        		#print(klant_lijst)
+        		#print('Hello '+ klant[1])
+        		main()
+	
