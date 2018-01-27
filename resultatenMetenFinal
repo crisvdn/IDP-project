@@ -132,7 +132,7 @@ try:
                                 if GPIO.input(knopGeel) == False:
                                     print("Gele knop ingedrukt. Herhalingen opgeslagen")
                                     #Hier moet het gewicht + de Herhalingen worden opgestuurd naar de database.
-                                    sleep(0.2)
+                                    time.sleep(0.2)
                                     teller = 0
                                     time.sleep(0.3)
                                     readOut = 2
