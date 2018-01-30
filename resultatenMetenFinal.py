@@ -38,8 +38,6 @@ for digit in digits:
     GPIO.setup(digit, GPIO.OUT)
     GPIO.output(digit, 1)
 
-
-
 def add_resultaat(uniqueID, apparaatid, beginTijd, eindTijd, gewicht, herhalingen):
     kg = gewicht
     klantid = uniqueID
@@ -49,21 +47,22 @@ def add_resultaat(uniqueID, apparaatid, beginTijd, eindTijd, gewicht, herhalinge
     INSERT INTO
         sport_op
     VALUES
-        (%s, %s, %s, %s, %s, %s)
+        (default, %s, %s, %s, %s, %s, %s)
     """
     values = (klantid, apparaatid, begintijd, eindtijd, kg, herhalingen)
     cur.execute(query, values)
     conn.commit()
 
-def get_all_persons():
+def get_all_personen():
     query = """
     SELECT
-        *
+        klant_id
     FROM
-        persoon
+        klant
     """
     cur.execute(query)
     return cur.fetchall()
+
 
 def tijd():
     a = (time.ctime()[10:19])
@@ -125,10 +124,10 @@ try:
             print("Hallo *Klant*")
             if not error:
                 uniqueID = ""
-                for i in range(len(uid)-1):
-                    uniqueID += str(uid[i])
+                for i in uid:
+                    uniqueID += str(i)
                 print (uniqueID)
-            while True:
+            while len(uniqueID) > 5:
                 if readOut == 0:
                     break
                 print("U kunt uw gewicht instellen.")
@@ -169,7 +168,6 @@ try:
                             time.sleep(0.3)
                             while readOut == 3:
                                 if GPIO.input(knopRood) == False:
-                                    beginTijd = (time.ctime()[10:19])
                                     print("Rode knop is ingedrukt. 1 Herhaling toegevoegd")
                                     herhaling += 1
                                     time.sleep(0.3)
@@ -177,7 +175,10 @@ try:
                                     eindTijd = tijd()
                                     print("Gele knop ingedrukt. Herhalingen opgeslagen")
                                     #Hier moet het gewicht + de Herhalingen worden opgestuurd naar de database.
-                                    add_resultaat(uniqueID, apparaatid, beginTijd, eindTijd, gewicht, herhaling)
+                                    klanten = get_all_personen()
+                                    for klant in klanten:
+                                        if klant[0] == uniqueID:
+                                            add_resultaat(uniqueID, apparaatid, beginTijd, eindTijd, gewicht, herhaling)
                                     time.sleep(0.2)
                                     herhaling = 0
                                     time.sleep(0.3)
