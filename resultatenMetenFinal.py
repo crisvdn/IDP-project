@@ -181,7 +181,6 @@ try:
                                             add_resultaat(uniqueID, apparaatid, beginTijd, eindTijd, gewicht, herhaling)
                                     time.sleep(0.2)
                                     herhaling = 0
-                                    time.sleep(0.3)
                                     readOut = 2
                                 s = str(herhaling).rjust(4)
                                 for digit in range(4):
