@@ -18,3 +18,7 @@ Hiermee kan de klant registreren.
 
 - resultatenMetenFinal.py
 Dit python bestand zorgt dat de resultaten gemeten en opgeslagen worden in de database.
+
+- mailmenu.py
+
+Dit python bestand zorgt dat de klanten kunnen mailen voor advies.
