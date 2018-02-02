@@ -12,13 +12,15 @@ poortje_finaal2.0.py
 Dit python bestand is voor het aansturen van het poortje.
 Hij checkt de unique ID van het pasje/tag of deze in de database staat.
 
-- registrerenFinal(3.2).py
+registrerenFinal(3.2).py
 Dit python bestand zorgt dat de Tkinter GUI werkt naar behoren.
 Hiermee kan de klant registreren.
 
-- resultatenMetenFinal.py
+resultatenMetenFinal.py
 Dit python bestand zorgt dat de resultaten gemeten en opgeslagen worden in de database.
 
-- mailmenu.py
+mailmenu.py
 
 Dit python bestand zorgt dat de klanten kunnen mailen voor advies.
+
+De rest van de bestanden zijn oudere versies en in te zien voor de gemaakte progressie.
