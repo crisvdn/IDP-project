@@ -5,11 +5,13 @@ import time
 import sys
 from pirc522 import RFID
 import RPi.GPIO as GPIO
-from time import sleep
+from time import sleep, strftime, localtime
 import smbus
+import uuid
 
 GPIO.setwarnings(False)
 
+sportschool_locatiemac = ':'.join(['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0,8*6,8)][::-1])
 
 #scherm
 I2C_ADDR  = 0x27 # I2C device address
@@ -109,8 +111,13 @@ def none_lcd():
   lcd_string('Kaart Ongeldig' ,LCD_LINE_1)
 
 
+def tijd():
+    a = time.strftime("%H%M%S", localtime())
+    return a
 
-
+def datum():
+    b = time.strftime("%Y-%m-%d")
+    return b
 
 
 #psycopg2
@@ -172,6 +179,39 @@ def get_all_personen():
     """
     cur.execute(query)
     return cur.fetchall()
+
+def Klanten_toegang():
+    query = """
+    SELECT
+        toegang_nr, klantid
+    FROM
+        toegang
+    """
+    cur.execute(query)
+    return cur.fetchall()
+
+def add_toegang_in(inchekttijd, incheckdatum, Unique_id, sportschool_locatiemac):
+    query = """
+    INSERT INTO
+        toegang(toegang_nr, inchekttijd, datum, klantid, sportschool_locatiemac)
+    VALUES
+        (1, %s, %s, %s, %s)
+    """
+    values = (inchekttijd, incheckdatum, Unique_id, sportschool_locatiemac)
+    cur.execute(query, values)
+    conn.commit()
+
+def add_toegang_uit(uitchektijd, uitcheckdatum, Unique_id, sportschool_locatiemac):
+    query = """
+    INSERT INTO
+        toegang(toegang_nr, uitchektijd, datum, klantid, sportschool_locatiemac)
+    VALUES
+        (0, %s, %s, %s, %s)
+    """
+    values = (uitchektijd, uitcheckdatum, Unique_id, sportschool_locatiemac)
+    cur.execute(query, values)
+    conn.commit()
+
 klant_lijst = []
 klantIngeschreven = 0
 while run:
@@ -194,12 +234,18 @@ while run:
             for klant in klanten:
                 if klant[0] == Unique_id and klant[0] in klant_lijst:
                     gedag()
+                    uitchektijd = tijd()
+                    uitcheckdatum = datum()
                     out_open()
+                    add_toegang_uit(uitchektijd, uitcheckdatum, Unique_id, sportschool_locatiemac)
                     klant_lijst.remove(klant[0])
                     main()
                 elif klant[0] == Unique_id and klant[0] not in klant_lijst:
                     hello()
+                    inchekttijd = tijd()
+                    incheckdatum = datum()
                     in_open()
+                    add_toegang_in(inchekttijd, incheckdatum, Unique_id, sportschool_locatiemac)
                     klant_lijst.append(klant[0])
                     main()
             klantIngeschreven = 0
